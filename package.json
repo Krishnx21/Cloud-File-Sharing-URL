@@ -1,0 +1,25 @@
+{
+  "name": "smart-file-sharing-system-cloud",
+  "version": "1.0.0",
+  "description": "A cloud app ",
+  "keywords": [
+    "javascript",
+    "backend",
+    "cloud"
+  ],
+  "homepage": "https://github.com/Krishnx21/smart-file-sharing-system-cloud#readme",
+  "bugs": {
+    "url": "https://github.com/Krishnx21/smart-file-sharing-system-cloud/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Krishnx21/smart-file-sharing-system-cloud.git"
+  },
+  "license": "ISC",
+  "author": "krishna",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
