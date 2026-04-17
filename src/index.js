@@ -1,3 +1,4 @@
+//1st connect db and then start the server
 import dotenv from "dotenv"
 import connectDB from "./db/index2.js";
 import app from './app.js'
