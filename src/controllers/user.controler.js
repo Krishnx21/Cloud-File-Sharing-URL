@@ -1,6 +1,6 @@
  //Route = “where to go” Controller = “what to do”
 
  
-export const testController = (req, res) => {
+export const userController = (req, res) => {
   res.send("Controller working ✅");
 };

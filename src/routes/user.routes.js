@@ -1,10 +1,9 @@
 //Defines API endpoints
-
 import express from "express";
-import { testController } from "../controllers/testController.js";
+import { userController } from "../controllers/user.controler.js";
 
 const router = express.Router();
 
-router.get("/test", testController);
+router.get("/test", userController);
 
 export default router;
