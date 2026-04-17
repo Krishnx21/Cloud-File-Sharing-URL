@@ -1,28 +1,39 @@
 {
-  "name": "smart-file-sharing-system-cloud",
+  "name": "smart-file-sharing-system",
   "version": "1.0.0",
-  "description": "A cloud app ",
-  "type": "commonjs",
+  "description": "A secure backend system for uploading, storing, and sharing files with expirable links.",
+  "type": "module",
   "keywords": [
     "javascript",
     "backend",
-    "cloud"
+    "cloud",
+    "file-sharing",
+    "api"
   ],
-  "homepage": "https://github.com/Krishnx21/smart-file-sharing-system-cloud#readme",
+  "homepage": "https://github.com/Krishnx21/smart-file-sharing-system#readme",
   "bugs": {
-    "url": "https://github.com/Krishnx21/smart-file-sharing-system-cloud/issues"
+    "url": "https://github.com/Krishnx21/smart-file-sharing-system/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Krishnx21/smart-file-sharing-system-cloud.git"
+    "url": "git+https://github.com/Krishnx21/smart-file-sharing-system.git"
   },
   "license": "ISC",
   "author": "krishna",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "prettier": "^3.8.3"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.4.1"
   }
 }
