@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true
+    },
+    file: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "File"
     }
   },
   { timestamps: true }
