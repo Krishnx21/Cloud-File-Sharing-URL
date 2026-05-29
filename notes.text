@@ -1,3 +1,8 @@
+ //Route = “where to go” Controller = “what to do”
+
+
+
+
 
 FLOW OF BACKEND DEVELOPMENT
 
@@ -182,3 +187,45 @@ file expiry
 delete expired files
 download count
 file size limit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1. Fix file names
+2. Fix imports
+3. Build register controller
+4. Test register API
+5. Build login controller
+6. Test login API
+7. Create verifyJWT middleware
+8. Create file.model.js
+9. Multer middleware
+10. Cloudinary
+11. Upload controller
+12. Share links
+
+
+
+
+req.body
+ ↓
+validation
+ ↓
+check existing user
+ ↓
+hash password
+ ↓
+create user
+ ↓
+ApiResponse

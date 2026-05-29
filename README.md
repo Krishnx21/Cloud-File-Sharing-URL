@@ -71,7 +71,7 @@ Here is a visual "3D-like" flow of how this backend currently works:
          |                        |  |
          |  2) Express App        |  |
          |  Middleware Layer      |  |
-         |  (CORS, JSON, Cookie) |  |
+         |  (CORS, JSON, Cookie)  |  |
          |                        |  |
          |  3) Route -> Controller|  |
          |  (register / login)    |  |
