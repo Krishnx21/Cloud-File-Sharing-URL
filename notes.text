@@ -1,231 +1,399 @@
- //Route = “where to go” Controller = “what to do”
+SMART FILE SHARING SYSTEM BACKEND NOTES
+
+============================================================
+1. FULL BACKEND GRAPH
+============================================================
+
+Frontend / Postman
+      |
+      | sends HTTP request
+      v
+src/index.js
+      |
+      | loads .env and starts database connection
+      v
+src/db/index2.js
+      |
+      | connects backend with MongoDB
+      v
+src/app.js
+      |
+      | adds middleware and sends request to route files
+      v
+Routes
+      |
+      | /api/register  -> src/routes/user.routes.js
+      | /api/login     -> src/routes/user.routes.js
+      | /api/profile   -> src/routes/user.routes.js
+      | /api/auth/...  -> src/routes/auth.routes.js
+      v
+Controllers
+      |
+      | registerUser   -> create account
+      | loginUser      -> check password and create token
+      | getCurrentUser -> return logged-in user
+      v
+Model
+      |
+      | src/modules/user.model.js
+      | defines user fields and password methods
+      v
+MongoDB
+      |
+      | saves user data
+      v
+Response
+      |
+      | ApiResponse sends success response
+      | ApiError is used when something goes wrong
+      v
+Frontend / Postman receives JSON
 
 
+============================================================
+2. BACKEND EXPLAINED IN VERY EASY LANGUAGE
+============================================================
 
+Backend means the server side of your project.
 
+The frontend or Postman sends a request like:
 
-FLOW OF BACKEND DEVELOPMENT
+POST /api/register
 
-
-
-
-
-PHASE 1 — FOUNDATION
-✅ Step 1 → Setup Backend
-
-Build:
-
-Express app
-MongoDB connection
-Basic route
-
-Files:
-
-app.js
-index.js
-db/
-routes/
-controllers/
-
-🎯 Goal:
-
-server should run
-/api/test should work
-
-✅ DONE already.
-
-🚀 PHASE 2 — CLEAN ARCHITECTURE
-✅ Step 2 → Utilities
-
-Build:
-
-ApiError.js
-ApiResponse.js
-asyncHandler.js
-
-Why NOW?
-👉 So all future controllers stay clean.
-
-🎯 Goal:
-
-understand clean backend structure
-
-✅ You are here now.
-
-🚀 PHASE 3 — USER SYSTEM
-✅ Step 3 → User Model
-
-Build:
-
-models/user.model.js
-
-Fields:
-
-username
-email
-password
-
-🎯 Goal:
-
-understand DB structure
-
-✅ DONE already.
-
-🚀 PHASE 4 — AUTH SYSTEM
-✅ Step 4 → Register/Login
-
-Build:
-
-auth controller
-auth routes
-
-Learn:
-
-req.body
-User.create()
-bcrypt
-JWT
-
-🎯 Goal:
-
-user authentication works
-🚀 PHASE 5 — AUTH MIDDLEWARE
-✅ Step 5 → JWT Middleware
-
-Build:
-
-verifyJWT middleware
-
-Purpose:
-
-protect routes
+The backend receives that request, checks the data, talks to the database,
+and sends a response.
 
 Example:
 
-only logged-in users upload files
-🚀 PHASE 6 — FILE HANDLING
-✅ Step 6 → Multer Middleware
+User enters username, email, password.
+Backend checks if fields are empty.
+Backend checks if email already exists.
+Backend saves user in MongoDB.
+Backend sends success response.
 
-Build:
 
+============================================================
+3. FILE BY FILE EXPLANATION
+============================================================
+
+src/index.js
+
+This is the starting file.
+
+1. It loads .env values.
+2. It imports connectDB.
+3. It imports app.
+4. It connects MongoDB.
+5. It starts the server.
+
+Easy meaning:
+index.js turns on the backend.
+
+
+src/app.js
+
+This file creates the Express app.
+
+1. express.json reads JSON from frontend.
+2. cors allows frontend to call backend.
+3. cookieParser reads cookies.
+4. app.use("/api", userRoutes) connects user routes.
+5. app.use("/api/auth", authRoutes) connects auth routes.
+
+Easy meaning:
+app.js decides which route file should handle each request.
+
+
+src/db/index2.js
+
+This file connects backend to MongoDB.
+
+1. It uses mongoose.
+2. It reads MONGO_URI from .env.
+3. It tries to connect.
+4. It prints success or error.
+
+Easy meaning:
+Without this file, your backend cannot save or read users from MongoDB.
+
+
+src/routes/user.routes.js
+
+This file defines user API URLs.
+
+1. /register calls registerUser.
+2. /login calls loginUser.
+3. /profile calls getCurrentUser.
+
+Easy meaning:
+Routes are like road signs. They send requests to the correct controller.
+
+
+src/controllers/user.controler.js
+
+This file contains the real user logic.
+
+registerUser:
+
+1. Get data from req.body.
+2. Check empty fields.
+3. Check if user already exists.
+4. Create user in MongoDB.
+5. Password is hashed by user.model.js.
+6. Send user data without password.
+
+loginUser:
+
+1. Get email and password.
+2. Check empty fields.
+3. Find user by email.
+4. Compare password.
+5. Create JWT token.
+6. Send token to frontend.
+
+getCurrentUser:
+
+1. Sends current user data.
+2. Later this should use auth middleware.
+
+
+src/modules/user.model.js
+
+This file defines how a user looks in MongoDB.
+
+User fields:
+
+1. username
+2. email
+3. password
+4. fileUrl
+5. fileId
+6. files
+
+It also hashes password before saving.
+
+Easy meaning:
+Model is the database structure.
+
+
+src/utils/ApiResponse.js
+
+This creates a common success response.
+
+Example:
+
+{
+  statusCode: 200,
+  message: "Login successful",
+  data: {...},
+  success: true
+}
+
+
+src/utils/ApiError.js
+
+This creates a common error object.
+
+Example:
+
+throw new ApiError(400, "All fields are required")
+
+
+src/utils/asyncHandler.js
+
+This catches errors from async controllers.
+
+Easy meaning:
+It saves you from writing try/catch again and again.
+
+
+src/middleware/multer.middleware.js
+
+This handles file upload from frontend.
+
+1. It stores uploaded file in public/temp.
+2. It keeps original file name.
+3. It exports upload middleware.
+
+
+src/utils/cloudnary.js
+
+This uploads files to Cloudinary.
+
+1. Configure Cloudinary from .env.
+2. Upload local file.
+3. Return file URL and public id.
+4. Delete local file if upload fails.
+
+
+src/controllers/file.controller.js
+
+This is draft file upload logic.
+
+Future flow:
+
+1. Get file from req.file.
+2. Upload to Cloudinary.
+3. Save URL in MongoDB.
+4. Send share link.
+
+
+src/routes/file.routes.js
+
+This is draft file upload route.
+
+It is commented because it still needs proper imports and auth middleware.
+
+
+============================================================
+4. REGISTER FLOW IN EASY LANGUAGE
+============================================================
+
+POST /api/register
+
+1. Frontend sends username, email, password.
+2. user.routes.js receives /register route.
+3. It calls registerUser controller.
+4. Controller checks empty fields.
+5. Controller checks email in MongoDB.
+6. Controller creates user.
+7. user.model.js hashes password before saving.
+8. MongoDB saves user.
+9. Backend sends success response.
+
+
+============================================================
+5. LOGIN FLOW IN EASY LANGUAGE
+============================================================
+
+POST /api/login
+
+1. Frontend sends email and password.
+2. user.routes.js receives /login route.
+3. It calls loginUser controller.
+4. Controller finds user by email.
+5. Controller compares password using bcrypt.
+6. If password is correct, JWT token is created.
+7. Backend sends token and user data.
+
+
+============================================================
+6. FILE UPLOAD FLOW IN EASY LANGUAGE
+============================================================
+
+Frontend / Postman uploads file
+      |
+      v
+file.routes.js
+      |
+      v
 multer.middleware.js
-
-Learn:
-
+      |
+      v
 req.file
-upload.single()
-temporary file storage
+      |
+      v
+cloudnary.js uploads to Cloudinary
+      |
+      v
+MongoDB saves URL
+      |
+      v
+Backend sends response
 
-🎯 Goal:
-
-backend receives uploaded file
-🚀 PHASE 7 — CLOUD STORAGE
-✅ Step 7 → Cloudinary Utility
-
-Build:
-
-utils/cloudinary.js
-
-Purpose:
-
-upload local file to cloud
-
-🎯 Goal:
-
-get cloud URL
-🚀 PHASE 8 — FILE MODEL
-✅ Step 8 → File Schema
-
-Build:
-
-models/file.model.js
-
-Fields:
-
-filename
-url
-uploadedBy
-expiresAt
-
-🎯 Goal:
-
-store uploaded file info
-🚀 PHASE 9 — FILE UPLOAD CONTROLLER
-✅ Step 9 → Upload File API
-
-Build:
-
-upload controller
-
-Flow:
-
-req.file
-  ↓
-cloudinary upload
-  ↓
-save URL in DB
-  ↓
-send response
-
-🔥 THIS is your CORE feature.
-
-🚀 PHASE 10 — FILE SHARING
-✅ Step 10 → Shareable Link
-
-Build:
-
-GET /file/:id
-
-🎯 Goal:
-
-anyone can access shared file
-🚀 PHASE 11 — ADVANCED FEATURES
-
-Later:
-
-file expiry
-delete expired files
-download count
-file size limit
+Current status:
+File upload flow is planned, but controller and route are not fully implemented yet.
 
 
+============================================================
+7. IMPLEMENTATION STEPS IN EASY LANGUAGE
+============================================================
+
+User register implementation:
+
+// 1. Get data from frontend (req.body)
+// 2. Validate fields
+//    - empty?
+//    - valid email?
+//    - password length?
+// 3. Check if user already exists
+//    - email
+//    - username
+// 4. Save password in model, model hashes it
+// 5. Create user in database
+// 6. Create clean response object
+// 7. Remove password from response
+// 8. Check if user created successfully
+// 9. Send response
 
 
+User login implementation:
+
+// 1. Get email and password from frontend
+// 2. Validate fields
+// 3. Find user by email
+// 4. Compare password
+// 5. Create JWT token
+// 6. Send response
 
 
+File upload implementation:
+
+// 1. Get file from frontend (req.file)
+// 2. Validate file exists
+// 3. Upload file to Cloudinary
+// 4. Save file URL and public id in database
+// 5. Generate shareable link
+// 6. Send response
 
 
+Database implementation:
+
+// 1. Read MongoDB URL from .env
+// 2. Call mongoose.connect
+// 3. If connected, continue backend
+// 4. If failed, show error
 
 
+Route implementation:
+
+// 1. Receive request URL
+// 2. Match URL with route
+// 3. Run middleware if needed
+// 4. Run controller function
+// 5. Controller sends response
 
 
+============================================================
+8. IMPORTANT SIMPLE DEFINITIONS
+============================================================
 
+req.body:
+Data sent by frontend, like username, email, password.
 
+req.file:
+Uploaded file data added by multer.
 
-1. Fix file names
-2. Fix imports
-3. Build register controller
-4. Test register API
-5. Build login controller
-6. Test login API
-7. Create verifyJWT middleware
-8. Create file.model.js
-9. Multer middleware
-10. Cloudinary
-11. Upload controller
-12. Share links
+Controller:
+Function that contains main logic.
 
+Route:
+URL path that calls a controller.
 
+Model:
+Database structure.
 
+Middleware:
+Function that runs between request and controller.
 
-req.body
- ↓
-validation
- ↓
-check existing user
- ↓
-hash password
- ↓
-create user
- ↓
-ApiResponse
+JWT:
+Login token used to prove user is logged in.
+
+bcrypt:
+Library used to hash and compare passwords.
+
+Cloudinary:
+Cloud storage for uploaded files.
+
+MongoDB:
+Database where user and file data is saved.
