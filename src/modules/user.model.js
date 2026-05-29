@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
 
 const userSchema = new mongoose.Schema(
@@ -16,7 +17,13 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true
     },
-    file: {
+    fileUrl: {
+      type: String
+    },
+    fileId: {
+      type: String
+    },
+    files: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: "File"
     }
