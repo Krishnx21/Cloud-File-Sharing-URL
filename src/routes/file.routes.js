@@ -8,6 +8,9 @@
 //
 // Note: this route is a draft right now. It needs imports and verifyJWT before use.
 
+console.log("[file.routes.js] File route draft loaded only if another file imports it.");
+console.log("[file.routes.js] No active route runs yet. Next future flow will be route -> auth middleware -> multer -> file.controller.js.");
+
 // router.post(
 //   "/upload",
 //   verifyJWT,

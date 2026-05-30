@@ -11,6 +11,9 @@ class ApiError extends Error {
         errors = [],
         stack = " "
     ) {
+        console.log("[ApiError.js] ApiError constructor entered because a controller is throwing an error response.");
+        console.log("[ApiError.js] Incoming error data:", { statusCode, message, errors, stack });
+        console.log("[ApiError.js] Next step: store these values on the Error object for Express/error handling.");
         // Error parent class stores the message.
         super(message);
         // HTTP status code for response.
@@ -30,6 +33,7 @@ class ApiError extends Error {
             // Capture stack trace automatically.
             Error.captureStackTrace(this, this.constructor);
         }
+        console.log("[ApiError.js] ApiError object created. Data going out:", this);
     }
 }
 

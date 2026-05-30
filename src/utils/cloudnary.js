@@ -7,20 +7,32 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
 
+console.log("[cloudnary.js] Cloudinary utility file loaded because a controller imported uploadOnCloudinary().");
+console.log("[cloudnary.js] Next step: configure Cloudinary with .env values.");
+
 // Connect this backend with your Cloudinary account.
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
+console.log("[cloudnary.js] Cloudinary config completed. Incoming cloud_name exists:", Boolean(process.env.CLOUDINARY_CLOUD_NAME));
+console.log("[cloudnary.js] Data going out: uploadOnCloudinary() can now call cloudinary.uploader.upload().");
 
 // Upload one local file path to Cloudinary.
 const uploadOnCloudinary = async (localFilePath) => {
+  console.log("[cloudnary.js/uploadOnCloudinary] Upload helper entered from a controller.");
+  console.log("[cloudnary.js/uploadOnCloudinary] Incoming local file path:", localFilePath);
+  console.log("[cloudnary.js/uploadOnCloudinary] Next step: validate file path before upload.");
   try {
     // If no file path is provided, return null.
-    if (!localFilePath) return null;
+    if (!localFilePath) {
+      console.log("[cloudnary.js/uploadOnCloudinary] No file path received. Data going out: null to controller.");
+      return null;
+    }
 
     // Upload file. resource_type auto means image/video/pdf/etc can be detected.
+    console.log("[cloudnary.js/uploadOnCloudinary] Cloudinary upload starting. Data going in:", { localFilePath, resource_type: "auto" });
     const response = await cloudinary.uploader.upload(
       localFilePath,
       {
@@ -29,15 +41,20 @@ const uploadOnCloudinary = async (localFilePath) => {
     );
 
     console.log("File uploaded successfully on Cloudinary");
+    console.log("[cloudnary.js/uploadOnCloudinary] Cloudinary upload completed. Response from Cloudinary:", response);
 
     // Return Cloudinary response to controller.
+    console.log("[cloudnary.js/uploadOnCloudinary] Data going out to controller: Cloudinary response with URL/public_id.");
     return response;
   } catch (error) {
+    console.log("[cloudnary.js/uploadOnCloudinary] Error caught during Cloudinary upload:", error);
+    console.log("[cloudnary.js/uploadOnCloudinary] Next step: delete local temp file so storage does not fill up.");
     // Remove local file if upload fails, so temp folder does not fill up.
     fs.unlinkSync(localFilePath);
 
     console.log("Cloudinary upload failed", error);
 
+    console.log("[cloudnary.js/uploadOnCloudinary] Data going out to controller after failed upload: null.");
     return null;
   }
 };

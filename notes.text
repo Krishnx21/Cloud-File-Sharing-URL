@@ -397,3 +397,163 @@ Cloud storage for uploaded files.
 
 MongoDB:
 Database where user and file data is saved.
+
+
+
+
+
+
+
+
+
+
+AFTER MAKING THIS PROJECT I WILL WORK ON IT:
+
+1. Deploy it
+2. Learn Docker
+3. Build one more backend project
+4. Learn AWS basics (EC2 + S3)
+5. Learn GitHub Actions CI/CD
+6. Learn System Design basics
+7. Learn Kubernetes
+
+
+
+
+IN THIS PROJECT THE THINGS I HAVE TO IMPLEMENTED 
+🔄 JWT verification middleware   ← NOW
+
+⬜ getCurrentUser route
+⬜ file.model.js
+⬜ uploadFile controller
+⬜ upload route
+⬜ cloudinary integration
+⬜ save file record
+⬜ generate share link
+⬜ file expiry
+
+
+
+
+Yes, exactly. Your thinking is correct.
+
+You should implement in this order:
+
+Step 3: JWT Middleware
+
+Create:
+
+src/middleware/auth.middleware.js
+Purpose:
+
+read token
+verify token
+find user
+attach user to req.user
+It should check token from either:
+
+Authorization: Bearer token_here
+or later from cookies.
+
+If token is missing or invalid:
+
+401 Unauthorized
+Step 4: Protected Current User Route
+
+Example:
+
+GET /api/auth/current-user
+Flow:
+
+request
+-> auth middleware checks token
+-> if valid, req.user is added
+-> controller returns user
+After this, your auth system is basically complete.
+
+Then start file sharing.
+
+Step 5: File Model
+
+Create something like:
+
+src/modules/file.model.js
+Fields:
+
+filename
+url
+publicId
+uploadedBy
+size
+mimetype
+expiresAt
+uploadedBy should reference the user:
+
+uploadedBy: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "User"
+}
+Step 6: Upload Route
+
+Create active route:
+
+POST /api/files/upload
+Use:
+
+upload.single("file")
+And protect it:
+
+verifyJWT
+So only logged-in users can upload.
+
+Step 7: Cloudinary Upload
+
+Flow:
+
+req.file
+-> req.file.path
+-> uploadOnCloudinary(req.file.path)
+-> Cloudinary returns url and public_id
+Step 8: Save File Record
+
+Save in MongoDB:
+
+filename
+url
+publicId
+uploadedBy
+size
+mimetype
+expiresAt
+Step 9: Generate Shareable Link
+
+After saving file, return:
+
+http://localhost:8000/api/files/:id
+Example:
+
+http://localhost:8000/api/files/6854ab12
+The :id should be the MongoDB file document _id.
+
+Step 10: Access Shared File
+
+Route:
+
+GET /api/files/:id
+Flow:
+
+find file by id
+check expiry if expiresAt exists
+return file URL or redirect to Cloudinary URL
+Best order:
+
+Auth register/login
+-> JWT middleware
+-> protected current-user route
+-> file model
+-> upload route
+-> Cloudinary upload
+-> save file record
+-> share link
+-> access shared file
+So yes: do Step 3 and Step 4 first. Then file upload.
