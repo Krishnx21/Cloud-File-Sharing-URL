@@ -435,32 +435,11 @@ IN THIS PROJECT THE THINGS I HAVE TO IMPLEMENTED
 
 
 
-Yes, exactly. Your thinking is correct.
-
-You should implement in this order:
 
 
 
-Step 5: File Model
 
-Create something like:
 
-src/modules/file.model.js
-Fields:
-
-filename
-url
-publicId
-uploadedBy
-size
-mimetype
-expiresAt
-uploadedBy should reference the user:
-
-uploadedBy: {
-  type: mongoose.Schema.Types.ObjectId,
-  ref: "User"
-}
 Step 6: Upload Route
 
 Create active route:
@@ -516,9 +495,9 @@ return file URL or redirect to Cloudinary URL
 Best order:
 
 Auth register/login
--> JWT middleware
--> protected current-user route
--> file model
+-> JWT middleware done 
+-> protected current-user route done 
+-> file model done 
 -> upload route
 -> Cloudinary upload
 -> save file record
