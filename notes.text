@@ -439,39 +439,7 @@ Yes, exactly. Your thinking is correct.
 
 You should implement in this order:
 
-Step 3: JWT Middleware
 
-Create:
-
-src/middleware/auth.middleware.js
-Purpose:
-
-read token
-verify token
-find user
-attach user to req.user
-It should check token from either:
-
-Authorization: Bearer token_here
-or later from cookies.
-
-If token is missing or invalid:
-
-401 Unauthorized
-Step 4: Protected Current User Route
-
-Example:
-
-GET /api/auth/current-user
-Flow:
-
-request
--> auth middleware checks token
--> if valid, req.user is added
--> controller returns user
-After this, your auth system is basically complete.
-
-Then start file sharing.
 
 Step 5: File Model
 

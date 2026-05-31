@@ -5,6 +5,8 @@
 // 4. Export router to app.js
 import express from "express";
 import { register, login } from "../controllers/auth.controler.js";
+import { verifyJWT } from "../middleware/auth.middleware.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 console.log("[auth.routes.js] Auth route file loaded because app.js mounted /api/auth.");
 console.log("[auth.routes.js] Next step: create router and connect URLs to auth.controler.js functions.");
@@ -19,6 +21,12 @@ router.post("/register", register);
 // Login user using auth.controler.js.
 console.log("[auth.routes.js] Login route added: POST /api/auth/login will execute login() in src/controllers/auth.controler.js.");
 router.post("/login", login);
+
+router.get("/current-user", verifyJWT, (req, res) => {
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Current user fetched", req.user));
+});
 
 console.log("[auth.routes.js] Auth router ready. Data going out: router is exported to app.js.");
 export default router;
