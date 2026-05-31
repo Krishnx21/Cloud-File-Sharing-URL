@@ -440,18 +440,7 @@ IN THIS PROJECT THE THINGS I HAVE TO IMPLEMENTED
 
 
 
-Step 6: Upload Route
 
-Create active route:
-
-POST /api/files/upload
-Use:
-
-upload.single("file")
-And protect it:
-
-verifyJWT
-So only logged-in users can upload.
 
 Step 7: Cloudinary Upload
 

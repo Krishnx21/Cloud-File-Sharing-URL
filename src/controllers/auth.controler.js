@@ -107,7 +107,11 @@ export const login = async (req, res) => {
 
   // Create token for logged-in user.
   console.log("[auth.controler.js/login] JWT generation started. Data going into token payload:", { id: user._id });
-  const token = jwt.sign({ id: user._id }, "secretkey");
+  const token = jwt.sign(
+    { id: user._id },
+    process.env.JWT_SECRET || "secretkey",
+    { expiresIn: "1d" }
+  );
   console.log("[auth.controler.js/login] JWT generation completed. Token going out to response:", token);
 
   // Send login response.

@@ -10,11 +10,13 @@
 //    - /api goes to user routes
 //    - /api/auth goes to auth routes
 // 4. Export app so index.js can start the server
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import userRoutes from "./routes/user.routes.js";
 import authRoutes from "./routes/auth.routes.js";
+import fileRoutes from "./routes/file.routes.js";
 
 console.log("[app.js] Express app setup file loaded because index.js imported app from here.");
 console.log("[app.js] Next step: create the Express app, attach middleware, then connect route files.");
@@ -59,7 +61,12 @@ console.log("[app.js] userRoutes mounted. Next route group: /api/auth goes to au
 // Send /api/auth/register and /api/auth/login requests to auth.routes.js.
 console.log("[app.js] Mounting authRoutes. Incoming URLs beginning with /api/auth will go to src/routes/auth.routes.js.");
 app.use("/api/auth", authRoutes);
-console.log("[app.js] authRoutes mounted. Data going out: configured app is exported back to index.js.");
+console.log("[app.js] authRoutes mounted. Next route group: /api/files goes to file.routes.js.");
+
+// Send /api/files/upload requests to file.routes.js.
+console.log("[app.js] Mounting fileRoutes. Incoming URLs beginning with /api/files will go to src/routes/file.routes.js.");
+app.use("/api/files", fileRoutes);
+console.log("[app.js] fileRoutes mounted. Data going out: configured app is exported back to index.js.");
 
 // Send JSON errors instead of Express's default HTML error page.
 app.use((err, req, res, next) => {

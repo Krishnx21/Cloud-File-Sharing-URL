@@ -1,5 +1,7 @@
 
 
+import mongoose from "mongoose";
+
 const fileSchema = new mongoose.Schema({
   // File name as uploaded by user.
   filename: {
