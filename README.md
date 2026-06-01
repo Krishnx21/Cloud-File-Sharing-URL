@@ -5,10 +5,13 @@
 ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=flat-square&logo=mongodb&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-000000?style=flat-square&logo=jsonwebtokens&logoColor=white)
 ![Cloudinary](https://img.shields.io/badge/Cloudinary-3448C5?style=flat-square&logo=cloudinary&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)
 
-> A beginner-friendly Node.js backend for user authentication and cloud-ready file sharing.
+> A beginner-friendly full-stack file sharing system with authentication, Cloudinary uploads, shareable links, QR codes, download tracking, and a React dashboard.
 
-This project is the backend API layer for a smart file-sharing system. It currently supports user registration, user login, JWT token creation, MongoDB connection, password hashing, and starter files for file upload with Multer and Cloudinary.
+This project includes a Node.js/Express backend and a React/Vite frontend for a smart file-sharing system. It supports user registration, login, JWT authentication, MongoDB storage, Cloudinary uploads, expiring share links, QR code sharing, file history, download counts, delete file, and a local forgot-password reset flow.
 
 The codebase also includes easy comments in almost every backend file so the full request flow is easier to understand while learning.
 
@@ -21,8 +24,15 @@ The codebase also includes easy comments in almost every backend file so the ful
 - Logs users in by checking email and password
 - Creates a JWT token after login
 - Uses reusable API response and error helper classes
-- Includes Multer setup for future file uploads
-- Includes Cloudinary upload helper for future cloud storage
+- Uploads files to Cloudinary using Multer memory storage
+- Saves uploaded file metadata in MongoDB
+- Generates shareable links for uploaded files
+- Generates QR codes on the frontend for share links
+- Tracks download count when a share link is opened
+- Supports expiring links
+- Supports deleting uploaded files from Cloudinary and MongoDB
+- Includes forgot-password and reset-password routes for local testing
+- Includes a React/Vite frontend dashboard
 - Includes [notes.text](./notes.text) with a full beginner explanation and backend flow
 
 ## Tech Stack
@@ -34,8 +44,11 @@ The codebase also includes easy comments in almost every backend file so the ful
 | Database | MongoDB + Mongoose |
 | Authentication | JWT (`jsonwebtoken`) |
 | Password Security | `bcryptjs` |
-| File Upload Starter | Multer |
-| Cloud Storage Starter | Cloudinary |
+| File Upload | Multer memory storage |
+| Cloud Storage | Cloudinary |
+| Frontend | React + Vite |
+| Styling | Tailwind CSS |
+| UI/Motion | shadcn-style components + Framer Motion |
 | Dev Tooling | Nodemon, Prettier |
 
 ## Project Structure
@@ -45,6 +58,17 @@ smart-file-sharing-system-cloud/
 |-- notes.text
 |-- package.json
 |-- README.md
+|-- frontend/
+|   |-- package.json
+|   |-- index.html
+|   |-- src/
+|       |-- components/
+|       |-- context/
+|       |-- hooks/
+|       |-- pages/
+|       |-- routes/
+|       |-- services/
+|       |-- styles/
 |-- public/
 |-- src/
 |   |-- app.js
@@ -59,6 +83,7 @@ smart-file-sharing-system-cloud/
 |   |-- middleware/
 |   |   |-- multer.middleware.js
 |   |-- modules/
+|   |   |-- file.model.js
 |   |   |-- user.model.js
 |   |-- routes/
 |   |   |-- auth.routes.js
@@ -96,16 +121,21 @@ Routes
       | /api/login     -> user.routes.js
       | /api/profile   -> user.routes.js
       | /api/auth/...  -> auth.routes.js
+      | /api/files/... -> file.routes.js
       v
 Controllers
       |
       | registerUser
       | loginUser
       | getCurrentUser
+      | uploadFile
+      | getUserFiles
+      | getFileById
+      | deleteFile
       v
-User Model
+Models
       |
-      | schema + password hashing
+      | User schema + File schema
       v
 MongoDB
       |
@@ -199,7 +229,7 @@ loginUser controller
 ApiResponse sends token
 ```
 
-### Future File Upload
+### File Upload
 
 ```txt
 Frontend / Postman uploads file
@@ -208,13 +238,16 @@ Frontend / Postman uploads file
 file.routes.js
       |
       v
-multer.middleware.js creates req.file
+verifyJWT checks logged-in user
       |
       v
-file.controller.js uploads file
+multer.middleware.js stores file in memory
       |
       v
-cloudnary.js sends file to Cloudinary
+file.controller.js receives req.file.buffer
+      |
+      v
+cloudnary.js uploads buffer to Cloudinary
       |
       v
 MongoDB stores file URL and id
@@ -223,7 +256,7 @@ MongoDB stores file URL and id
 Backend sends shareable file response
 ```
 
-Current file upload status: starter files exist, but the full upload route and controller are still draft work.
+Current file upload status: working with Cloudinary, MongoDB, expiring links, QR sharing, and download counts.
 
 ## Quick Start
 
@@ -240,14 +273,21 @@ PORT=8000
 MONGO_URI=mongodb://127.0.0.1:27017/smart_file_sharing
 MONGO_URI_LOCAL=mongodb://127.0.0.1:27017/smart_file_sharing
 USE_LOCAL_DB=true
-CORS_ORIGIN=http://localhost:3000
+CORS_ORIGIN=http://localhost:5173
 JWT_SECRET=your_jwt_secret
 CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
 CLOUDINARY_API_KEY=your_cloudinary_api_key
 CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+PUBLIC_BASE_URL=http://localhost:8000
 ```
 
-### 3. Run development server
+`PUBLIC_BASE_URL` is used when generating shareable links and QR codes. For phone QR testing on the same Wi-Fi, use your laptop IP:
+
+```env
+PUBLIC_BASE_URL=http://192.168.x.x:8000
+```
+
+### 3. Run backend development server
 
 ```bash
 npm run dev
@@ -257,6 +297,28 @@ Server starts on:
 
 ```txt
 http://localhost:8000
+```
+
+### 4. Run frontend development server
+
+Open a second terminal:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend starts on:
+
+```txt
+http://localhost:5173
+```
+
+Create `frontend/.env` if needed:
+
+```env
+VITE_API_BASE_URL=http://localhost:8000/api
 ```
 
 ## API Endpoints
@@ -287,8 +349,27 @@ app.use("/api/auth", authRoutes);
 |---|---|---|
 | `POST` | `/api/auth/register` | Alternate register route |
 | `POST` | `/api/auth/login` | Alternate login route |
+| `GET` | `/api/auth/current-user` | Return logged-in user |
+| `POST` | `/api/auth/forgot-password` | Generate reset token for local testing |
+| `POST` | `/api/auth/reset-password` | Reset password using reset token |
 
-Note: the main cleaned-up auth flow is currently in `src/controllers/user.controler.js` and `src/routes/user.routes.js`.
+Note: the cleaned-up auth flow is in `src/controllers/user.controler.js`.
+
+### File Routes
+
+These routes are mounted from `src/app.js` using:
+
+```js
+app.use("/api/files", fileRoutes);
+```
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| `POST` | `/api/files/upload` | Upload one file and create a shareable link |
+| `GET` | `/api/files` | Get logged-in user's uploaded files |
+| `GET` | `/api/files/:id` | Open shared file and increment download count |
+| `DELETE` | `/api/files/:id` | Delete owned file from Cloudinary and MongoDB |
+| `GET` | `/api/files/upload-mode` | Debug route showing active upload mode |
 
 ## Sample Request Bodies
 
@@ -315,6 +396,56 @@ Use this with `POST /api/login`.
 }
 ```
 
+### Upload File
+
+Use this with `POST /api/files/upload`.
+
+Authorization:
+
+```txt
+Bearer Token
+```
+
+Body type: `form-data`
+
+| Key | Type | Example |
+|---|---|---|
+| `file` | File | `resume.pdf` |
+| `expiresInDays` | Text | `7` |
+
+Example success response:
+
+```json
+{
+  "statusCode": 201,
+  "message": "File uploaded successfully",
+  "data": {
+    "id": "file_id",
+    "filename": "resume.pdf",
+    "url": "https://res.cloudinary.com/...",
+    "publicId": "cloudinary_public_id",
+    "size": 84282,
+    "mimetype": "application/pdf",
+    "expiresAt": "2026-06-08T10:11:02.379Z",
+    "downloadCount": 0,
+    "shareableLink": "http://localhost:8000/api/files/file_id"
+  },
+  "success": true
+}
+```
+
+### File History
+
+Use this with `GET /api/files`.
+
+Authorization:
+
+```txt
+Bearer Token
+```
+
+No request body is needed.
+
 ## Main Files Explained
 
 | File | What it does |
@@ -325,11 +456,16 @@ Use this with `POST /api/login`.
 | `src/routes/user.routes.js` | Defines `/api/register`, `/api/login`, `/api/profile` |
 | `src/controllers/user.controler.js` | Main register, login, and profile logic |
 | `src/modules/user.model.js` | User schema and password hashing |
+| `src/modules/file.model.js` | File schema, expiry, and download count |
 | `src/utils/ApiResponse.js` | Common success response format |
 | `src/utils/ApiError.js` | Common error format |
 | `src/utils/asyncHandler.js` | Catches async controller errors |
-| `src/middleware/multer.middleware.js` | Handles uploaded files temporarily |
-| `src/utils/cloudnary.js` | Upload helper for Cloudinary |
+| `src/middleware/multer.middleware.js` | Reads uploaded files into memory |
+| `src/utils/cloudnary.js` | Uploads file buffers to Cloudinary |
+| `frontend/src/pages/Dashboard.jsx` | My Files dashboard |
+| `frontend/src/pages/Upload.jsx` | Upload and share link experience |
+| `frontend/src/pages/FileHistory.jsx` | Search/filter file table |
+| `frontend/src/components/file/ShareLinkCard.jsx` | Copy link and QR code sharing |
 | `notes.text` | Full beginner notes and backend explanation |
 
 ## Implementation Steps
@@ -367,12 +503,22 @@ Use this with `POST /api/login`.
 ### File Upload
 
 ```js
-// 1. Get file from frontend (req.file)
+// 1. Get file from frontend (req.file.buffer)
 // 2. Validate file exists
 // 3. Upload file to Cloudinary
 // 4. Save file URL and public id in database
 // 5. Generate shareable link
 // 6. Send response
+```
+
+### Share Link Access
+
+```js
+// 1. Find file by MongoDB id
+// 2. Check if file exists
+// 3. Check if link is expired
+// 4. Increase download count
+// 5. Redirect to Cloudinary URL
 ```
 
 ## Learning Notes
@@ -385,18 +531,29 @@ notes.text
 
 That file explains the backend one by one with graph, flow, and implementation steps.
 
+## Current Features
+
+- User register and login
+- JWT protected upload routes
+- Cloudinary upload using memory storage
+- MongoDB file history
+- Shareable file links
+- QR code sharing in frontend
+- Expiring links
+- Download count tracking
+- Delete file
+- Forgot/reset password flow for local testing
+- React dashboard with search and filters
+
 ## Roadmap
 
-- Add real `verifyJWT` auth middleware
-- Protect `/api/profile`
-- Finish file upload controller
-- Create file model for uploaded files
-- Save Cloudinary URL and public id in MongoDB
-- Generate shareable links
-- Add centralized Express error middleware
-- Add validation for email format and password length
+- Add email service for real password reset emails
+- Add password-protected share links
+- Add public share page with file preview
+- Add multi-file collections with one shared link
+- Add download-all-as-zip for collections
 - Add API documentation with Swagger/OpenAPI
-- Add tests for register and login
+- Add tests for auth, upload, delete, and expiry
 
 ## Contribution
 
