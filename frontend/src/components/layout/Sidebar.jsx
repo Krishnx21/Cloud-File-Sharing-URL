@@ -4,9 +4,9 @@ import { cn } from "../../lib/utils.js";
 import { Button } from "../ui/button.jsx";
 
 const items = [
-  { to: "/app", label: "Dashboard", icon: BarChart3 },
+  { to: "/app", label: "Overview", icon: BarChart3 },
   { to: "/app/upload", label: "Upload", icon: UploadCloud },
-  { to: "/app/history", label: "File History", icon: Files }
+  { to: "/app/history", label: "My Files", icon: Files }
 ];
 
 export function Sidebar({ open, onClose }) {

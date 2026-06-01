@@ -401,6 +401,11 @@ Database where user and file data is saved.
 
 
 
+After deployment: after deployment i can do ??
+
+Yes, after deployment your QR feature becomes a real-world feature. 🚀
+
+
 
 
 
@@ -416,26 +421,6 @@ AFTER MAKING THIS PROJECT I WILL WORK ON IT:
 5. Learn GitHub Actions CI/CD
 6. Learn System Design basics
 7. Learn Kubernetes
-
-
-
-
-IN THIS PROJECT THE THINGS I HAVE TO IMPLEMENTED 
-🔄 JWT verification middleware   ← NOW
-
-⬜ getCurrentUser route
-⬜ file.model.js
-⬜ uploadFile controller
-⬜ upload route
-⬜ cloudinary integration
-⬜ save file record
-⬜ generate share link
-⬜ file expiry
-
-
-
-
-
 
 
 

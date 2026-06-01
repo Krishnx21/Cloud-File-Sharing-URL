@@ -19,11 +19,7 @@
 
 @layer components {
   .app-bg {
-    background:
-      linear-gradient(90deg, rgba(244, 241, 234, 0.025) 1px, transparent 1px),
-      linear-gradient(180deg, rgba(244, 241, 234, 0.025) 1px, transparent 1px),
-      #0b0d10;
-    background-size: 32px 32px;
+    background: #0b0d10;
   }
 
   .glass-card {

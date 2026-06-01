@@ -23,11 +23,11 @@ export function Upload() {
   });
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
+    <div className="mx-auto max-w-4xl space-y-6">
       <div>
         <p className="text-sm text-primary">Upload</p>
-        <h1 className="mt-1 text-3xl font-semibold text-white">Create a secure file link</h1>
-        <p className="mt-2 text-sm text-slate-400">Drag a file into the dropzone, choose an expiry window, then share the generated link.</p>
+        <h1 className="mt-1 text-3xl font-semibold text-[#f4f1ea]">Create a file link</h1>
+        <p className="mt-2 text-sm text-slate-400">Upload once, then copy the link or scan the QR code.</p>
       </div>
       <UploadDropzone onUpload={upload.startUpload} status={upload.status} progress={upload.progress} error={upload.error} />
       {uploadedFile ? (

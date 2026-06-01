@@ -1,14 +1,15 @@
-import { Download, ExternalLink, FileText, Trash2 } from "lucide-react";
+import { Download, ExternalLink, Trash2 } from "lucide-react";
 import { CopyButton } from "../common/CopyButton.jsx";
 import { Badge } from "../ui/badge.jsx";
 import { Button } from "../ui/button.jsx";
 import { formatBytes, formatDate } from "../../lib/utils.js";
+import { FileTypeIcon } from "./FileTypeIcon.jsx";
 
 export function FileTable({ files, onDelete }) {
   return (
-    <div className="hidden overflow-hidden rounded-xl border border-white/10 bg-white/[0.04] md:block">
+    <div className="hidden overflow-hidden rounded-lg border border-white/10 bg-[#101318] md:block">
       <table className="w-full text-left text-sm">
-        <thead className="border-b border-white/10 text-xs uppercase text-slate-500">
+        <thead className="border-b border-white/10 bg-[#0d1014] text-xs uppercase tracking-wide text-slate-500">
           <tr>
             <th className="px-4 py-3 font-medium">File</th>
             <th className="px-4 py-3 font-medium">Size</th>
@@ -22,14 +23,12 @@ export function FileTable({ files, onDelete }) {
           {files.map((file) => {
             const expired = file.expiresAt && new Date(file.expiresAt) < new Date();
             return (
-              <tr key={file.id || file._id} className="border-b border-white/5 last:border-b-0">
+              <tr key={file.id || file._id} className="border-b border-white/5 transition-colors last:border-b-0 hover:bg-white/[0.025]">
                 <td className="px-4 py-4">
                   <div className="flex min-w-0 items-center gap-3">
-                    <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 text-primary">
-                      <FileText size={17} />
-                    </span>
+                    <FileTypeIcon mimetype={file.mimetype} />
                     <div className="min-w-0">
-                      <p className="truncate font-medium text-white">{file.filename}</p>
+                      <p className="truncate font-medium text-[#f4f1ea]">{file.filename}</p>
                       <p className="truncate text-xs text-slate-500">{file.mimetype}</p>
                     </div>
                   </div>

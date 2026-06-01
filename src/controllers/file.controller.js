@@ -13,6 +13,10 @@ import { uploadBufferOnCloudinary } from "../utils/cloudnary.js";
 
 console.log("[file.controller.js] File controller loaded because file.routes.js imported uploadFile/getFileById.");
 
+const getShareBaseUrl = (req) => {
+  return process.env.PUBLIC_BASE_URL || `${req.protocol}://${req.get("host")}`;
+};
+
 const getUploadMode = asyncHandler(async (req, res) => {
   return res.status(200).json(
     new ApiResponse(200, "Upload mode fetched", {
@@ -58,7 +62,7 @@ const uploadFile = asyncHandler(async (req, res) => {
     expiresAt
   });
 
-  const shareableLink = `${req.protocol}://${req.get("host")}/api/files/${file._id}`;
+  const shareableLink = `${getShareBaseUrl(req)}/api/files/${file._id}`;
 
   console.log("[file.controller.js/uploadFile] File saved in MongoDB:", file);
 
@@ -93,7 +97,7 @@ const buildFileResponse = (req, file) => ({
   createdAt: file.createdAt,
   updatedAt: file.updatedAt,
   uploadedBy: file.user,
-  shareableLink: `${req.protocol}://${req.get("host")}/api/files/${file._id}`
+  shareableLink: `${getShareBaseUrl(req)}/api/files/${file._id}`
 });
 
 const getUserFiles = asyncHandler(async (req, res) => {
