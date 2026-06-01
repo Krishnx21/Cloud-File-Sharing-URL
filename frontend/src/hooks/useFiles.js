@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getFiles } from "../services/file.service.js";
+import { deleteFile, getFiles } from "../services/file.service.js";
 
 export function useFiles() {
   const [files, setFiles] = useState([]);
@@ -20,9 +20,14 @@ export function useFiles() {
     }
   }
 
+  async function removeFile(id) {
+    await deleteFile(id);
+    setFiles((current) => current.filter((file) => (file.id || file._id) !== id));
+  }
+
   useEffect(() => {
     refresh();
   }, []);
 
-  return { files, loading, error, refresh };
+  return { files, loading, error, refresh, removeFile };
 }

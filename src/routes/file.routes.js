@@ -4,7 +4,7 @@
 // 3. Multer middleware reads uploaded file
 // 4. Controller uploads file to Cloudinary and saves details
 import express from "express";
-import { getFileById, getUploadMode, getUserFiles, uploadFile } from "../controllers/file.controller.js";
+import { deleteFile, getFileById, getUploadMode, getUserFiles, uploadFile } from "../controllers/file.controller.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
 
@@ -24,6 +24,8 @@ router.get("/", verifyJWT, getUserFiles);
 
 console.log("[file.routes.js] Share route added: GET /api/files/:id will redirect to the Cloudinary file URL if not expired.");
 router.get("/:id", getFileById);
+
+router.delete("/:id", verifyJWT, deleteFile);
 
 console.log("[file.routes.js] File router ready. Data going out: router is exported to app.js.");
 export default router;

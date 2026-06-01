@@ -451,11 +451,6 @@ IN THIS PROJECT THE THINGS I HAVE TO IMPLEMENTED
 7. Update CORS
 8. Final Testing
 
-1. Delete File
-2. My Files Dashboard
-3. Download Count
-4. Expiring Links
-5. QR Code Sharing 
 
 Auth register/login
 -> JWT middleware done 

@@ -8,7 +8,7 @@ export async function apiRequest(path, options = {}) {
     headers.set("Content-Type", "application/json");
   }
 
-  if (token) {
+  if (token && token !== "undefined" && token !== "null") {
     headers.set("Authorization", `Bearer ${token}`);
   }
 
@@ -21,6 +21,10 @@ export async function apiRequest(path, options = {}) {
   const payload = contentType.includes("application/json") ? await response.json() : await response.text();
 
   if (!response.ok) {
+    if (response.status === 401) {
+      localStorage.removeItem("sharecloud_token");
+      localStorage.removeItem("sharecloud_user");
+    }
     throw new Error(payload?.message || "Request failed");
   }
 

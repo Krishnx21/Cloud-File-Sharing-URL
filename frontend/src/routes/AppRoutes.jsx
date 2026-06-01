@@ -4,6 +4,8 @@ import { ProtectedRoute } from "./ProtectedRoute.jsx";
 import { Landing } from "../pages/Landing.jsx";
 import { Login } from "../pages/Login.jsx";
 import { Register } from "../pages/Register.jsx";
+import { ForgotPassword } from "../pages/ForgotPassword.jsx";
+import { ResetPassword } from "../pages/ResetPassword.jsx";
 import { Dashboard } from "../pages/Dashboard.jsx";
 import { Upload } from "../pages/Upload.jsx";
 import { FileHistory } from "../pages/FileHistory.jsx";
@@ -15,6 +17,8 @@ export function AppRoutes() {
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route element={<ProtectedRoute />}>
         <Route path="/app" element={<DashboardLayout />}>
           <Route index element={<Dashboard />} />

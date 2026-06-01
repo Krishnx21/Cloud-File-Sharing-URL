@@ -36,6 +36,13 @@ const fileSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
+  downloadCount: {
+    type: Number,
+    default: 0
+  },
+  lastAccessedAt: {
+    type: Date
+  },
 }, { timestamps: true });
 
 export const File = mongoose.model("File", fileSchema);

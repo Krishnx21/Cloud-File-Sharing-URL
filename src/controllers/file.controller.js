@@ -4,6 +4,7 @@
 // 3. Upload file to Cloudinary
 // 4. Save Cloudinary details in MongoDB
 // 5. Send response to frontend/Postman
+import { v2 as cloudinary } from "cloudinary";
 import { File } from "../modules/file.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
@@ -85,6 +86,8 @@ const buildFileResponse = (req, file) => ({
   size: file.size,
   mimetype: file.mimetype,
   expiresAt: file.expiresAt,
+  downloadCount: file.downloadCount || 0,
+  lastAccessedAt: file.lastAccessedAt,
   createdAt: file.createdAt,
   updatedAt: file.updatedAt,
   uploadedBy: file.user,
@@ -116,7 +119,35 @@ const getFileById = asyncHandler(async (req, res) => {
     throw new ApiError(410, "File link has expired");
   }
 
+  file.downloadCount = (file.downloadCount || 0) + 1;
+  file.lastAccessedAt = new Date();
+  await file.save();
+
   return res.redirect(file.url);
 });
 
-export { getUploadMode, uploadFile, getUserFiles, getFileById };
+const deleteFile = asyncHandler(async (req, res) => {
+  const file = await File.findOne({
+    _id: req.params.id,
+    user: req.user._id
+  });
+
+  if (!file) {
+    throw new ApiError(404, "File not found");
+  }
+
+  const resourceType = file.mimetype?.startsWith("image/")
+    ? "image"
+    : file.mimetype?.startsWith("video/")
+      ? "video"
+      : "raw";
+
+  await cloudinary.uploader.destroy(file.publicId, { resource_type: resourceType });
+  await File.deleteOne({ _id: file._id });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "File deleted successfully", { id: file._id }));
+});
+
+export { getUploadMode, uploadFile, getUserFiles, getFileById, deleteFile };

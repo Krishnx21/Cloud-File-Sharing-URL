@@ -1,6 +1,7 @@
 // user.controler.js
 // This file contains the main logic for user register, login, and profile.
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import { User } from "../modules/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
@@ -169,6 +170,61 @@ const getCurrentUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "Current user fetched", req.user || null));
 });
 
+const forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body || {};
+
+  if (!email?.trim()) {
+    throw new ApiError(400, "Email is required");
+  }
+
+  const user = await User.findOne({ email: email.toLowerCase() });
+
+  if (!user) {
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "If an account exists, a reset token has been generated", null));
+  }
+
+  const resetToken = crypto.randomBytes(32).toString("hex");
+  user.resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+  user.resetPasswordExpires = new Date(Date.now() + 15 * 60 * 1000);
+  await user.save({ validateBeforeSave: false });
+
+  return res.status(200).json(
+    new ApiResponse(200, "Password reset token generated", {
+      resetToken,
+      expiresInMinutes: 15
+    })
+  );
+});
+
+const resetPassword = asyncHandler(async (req, res) => {
+  const { token, password } = req.body || {};
+
+  if (!token?.trim() || !password?.trim()) {
+    throw new ApiError(400, "Reset token and new password are required");
+  }
+
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+  const user = await User.findOne({
+    resetPasswordToken: hashedToken,
+    resetPasswordExpires: { $gt: new Date() }
+  });
+
+  if (!user) {
+    throw new ApiError(400, "Reset token is invalid or expired");
+  }
+
+  user.password = password;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpires = undefined;
+  await user.save();
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Password reset successful", null));
+});
+
 // Old name kept so older imports do not break.
 const userController = registerUser;
 
@@ -176,5 +232,7 @@ export {
   userController,
   registerUser,
   loginUser,
-  getCurrentUser
+  getCurrentUser,
+  forgotPassword,
+  resetPassword
 };

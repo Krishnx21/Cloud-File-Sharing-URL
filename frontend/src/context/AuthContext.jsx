@@ -5,6 +5,13 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
+    const token = localStorage.getItem("sharecloud_token");
+    if (!token || token === "undefined" || token === "null") {
+      localStorage.removeItem("sharecloud_token");
+      localStorage.removeItem("sharecloud_user");
+      return null;
+    }
+
     const saved = localStorage.getItem("sharecloud_user");
     return saved ? JSON.parse(saved) : null;
   });
@@ -15,6 +22,9 @@ export function AuthProvider({ children }) {
     try {
       const response = await loginUser(values);
       const token = response.token || response.data?.token;
+      if (!token) {
+        throw new Error("Login succeeded but token was not returned by backend");
+      }
       const nextUser = response.data?.user || { email: values.email, username: values.email.split("@")[0] };
       localStorage.setItem("sharecloud_token", token);
       localStorage.setItem("sharecloud_user", JSON.stringify(nextUser));
@@ -41,7 +51,11 @@ export function AuthProvider({ children }) {
     setUser(null);
   }
 
-  const value = useMemo(() => ({ user, loading, login, register, logout, isAuthenticated: Boolean(user) }), [user, loading]);
+  const value = useMemo(() => {
+    const token = localStorage.getItem("sharecloud_token");
+    const hasToken = Boolean(token && token !== "undefined" && token !== "null");
+    return { user, loading, login, register, logout, isAuthenticated: Boolean(user && hasToken) };
+  }, [user, loading]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

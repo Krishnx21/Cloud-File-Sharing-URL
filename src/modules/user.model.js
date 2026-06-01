@@ -41,6 +41,12 @@ const userSchema = new mongoose.Schema(
     files: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: "File"
+    },
+    resetPasswordToken: {
+      type: String
+    },
+    resetPasswordExpires: {
+      type: Date
     }
   },
   { timestamps: true }

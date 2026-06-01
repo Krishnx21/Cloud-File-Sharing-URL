@@ -25,7 +25,7 @@ export function useUpload(onUploaded) {
     } catch (err) {
       setStatus("error");
       setError(err.message);
-      throw err;
+      return null;
     }
   }
 

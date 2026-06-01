@@ -37,6 +37,9 @@ export function Login() {
           <form className="mt-6 space-y-4" onSubmit={submit}>
             <Input type="email" placeholder="Email address" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
             <Input type="password" placeholder="Password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
+            <div className="text-right">
+              <Link className="text-sm text-primary hover:underline" to="/forgot-password">Forgot password?</Link>
+            </div>
             {error ? <p className="text-sm text-rose-300">{error}</p> : null}
             <Button className="w-full" disabled={loading}>
               {loading ? <Loader2 className="animate-spin" size={17} /> : null}

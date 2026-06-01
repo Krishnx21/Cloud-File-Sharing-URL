@@ -14,3 +14,9 @@ export async function uploadFile({ file, expiresInDays }) {
 export async function getFiles() {
   return apiRequest("/files");
 }
+
+export async function deleteFile(id) {
+  return apiRequest(`/files/${id}`, {
+    method: "DELETE"
+  });
+}
