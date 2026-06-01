@@ -4,7 +4,7 @@
 // 3. POST /api/auth/login goes to login controller
 // 4. Export router to app.js
 import express from "express";
-import { register, login } from "../controllers/auth.controler.js";
+import { loginUser, registerUser } from "../controllers/user.controler.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
@@ -16,11 +16,11 @@ console.log("[auth.routes.js] Router created. Data going out: route definitions 
 
 // Register new user using auth.controler.js.
 console.log("[auth.routes.js] Register route added: POST /api/auth/register will execute register() in src/controllers/auth.controler.js.");
-router.post("/register", register);
+router.post("/register", registerUser);
 
 // Login user using auth.controler.js.
 console.log("[auth.routes.js] Login route added: POST /api/auth/login will execute login() in src/controllers/auth.controler.js.");
-router.post("/login", login);
+router.post("/login", loginUser);
 
 router.get("/current-user", verifyJWT, (req, res) => {
   return res

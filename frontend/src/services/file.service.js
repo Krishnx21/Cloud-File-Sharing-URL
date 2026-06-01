@@ -10,3 +10,7 @@ export async function uploadFile({ file, expiresInDays }) {
     body: formData
   });
 }
+
+export async function getFiles() {
+  return apiRequest("/files");
+}

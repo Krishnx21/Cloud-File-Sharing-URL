@@ -14,8 +14,9 @@ export function AuthProvider({ children }) {
     setLoading(true);
     try {
       const response = await loginUser(values);
-      localStorage.setItem("sharecloud_token", response.token);
-      const nextUser = { email: values.email, username: values.email.split("@")[0] };
+      const token = response.token || response.data?.token;
+      const nextUser = response.data?.user || { email: values.email, username: values.email.split("@")[0] };
+      localStorage.setItem("sharecloud_token", token);
       localStorage.setItem("sharecloud_user", JSON.stringify(nextUser));
       setUser(nextUser);
       return response;

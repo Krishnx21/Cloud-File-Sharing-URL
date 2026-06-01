@@ -4,7 +4,7 @@
 // 3. Multer middleware reads uploaded file
 // 4. Controller uploads file to Cloudinary and saves details
 import express from "express";
-import { getFileById, uploadFile } from "../controllers/file.controller.js";
+import { getFileById, getUserFiles, uploadFile } from "../controllers/file.controller.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
 
@@ -15,6 +15,9 @@ const router = express.Router();
 
 console.log("[file.routes.js] Upload route added: POST /api/files/upload will run verifyJWT -> upload.single('file') -> uploadFile.");
 router.post("/upload", verifyJWT, upload.single("file"), uploadFile);
+
+console.log("[file.routes.js] History route added: GET /api/files will return logged-in user's files.");
+router.get("/", verifyJWT, getUserFiles);
 
 console.log("[file.routes.js] Share route added: GET /api/files/:id will redirect to the Cloudinary file URL if not expired.");
 router.get("/:id", getFileById);

@@ -110,8 +110,14 @@ const loginUser = asyncHandler(async (req, res) => {
 
   // Compare plain password with encrypted password stored in database.
   console.log("[user.controler.js/loginUser] Password comparison starting. Incoming plain password will be compared with stored hash.");
-  const isPasswordValid = await user.isPasswordCorrect(password);
+  let isPasswordValid = await user.isPasswordCorrect(password);
   console.log("[user.controler.js/loginUser] Password comparison completed. Result going out:", isPasswordValid);
+  if (!isPasswordValid && user.password === password) {
+    console.log("[user.controler.js/loginUser] Legacy plain password matched. Re-saving user so model hashes the password.");
+    user.password = password;
+    await user.save();
+    isPasswordValid = true;
+  }
   if (!isPasswordValid) {
     console.log("[user.controler.js/loginUser] Password did not match. Error going out to asyncHandler/Express:", "Invalid credentials");
     throw new ApiError(401, "Invalid credentials");

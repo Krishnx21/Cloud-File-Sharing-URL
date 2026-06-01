@@ -442,28 +442,20 @@ IN THIS PROJECT THE THINGS I HAVE TO IMPLEMENTED
 
 
 
+1. Push Backend to GitHub
+2. Deploy Backend on Render
+3. Test APIs on Render
+4. Push Frontend to GitHub
+5. Deploy Frontend on Vercel
+6. Update API URL
+7. Update CORS
+8. Final Testing
 
-Step 9: Generate Shareable Link
-
-After saving file, return:
-
-http://localhost:8000/api/files/:id
-Example:
-
-http://localhost:8000/api/files/6854ab12
-The :id should be the MongoDB file document _id.
-
-Step 10: Access Shared File
-
-Route:
-
-GET /api/files/:id
-Flow:
-
-find file by id
-check expiry if expiresAt exists
-return file URL or redirect to Cloudinary URL
-Best order:
+1. Delete File
+2. My Files Dashboard
+3. Download Count
+4. Expiring Links
+5. QR Code Sharing 
 
 Auth register/login
 -> JWT middleware done 
@@ -474,4 +466,3 @@ Auth register/login
 -> save file record
 -> share link
 -> access shared file
-So yes: do Step 3 and Step 4 first. Then file upload.

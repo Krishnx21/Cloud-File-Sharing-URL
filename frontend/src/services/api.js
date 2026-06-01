@@ -14,8 +14,7 @@ export async function apiRequest(path, options = {}) {
 
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
-    headers,
-    credentials: "include"
+    headers
   });
 
   const contentType = response.headers.get("content-type") || "";

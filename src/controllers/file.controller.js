@@ -71,6 +71,31 @@ const uploadFile = asyncHandler(async (req, res) => {
   );
 });
 
+const buildFileResponse = (req, file) => ({
+  id: file._id,
+  filename: file.filename,
+  url: file.url,
+  publicId: file.publicId,
+  size: file.size,
+  mimetype: file.mimetype,
+  expiresAt: file.expiresAt,
+  createdAt: file.createdAt,
+  updatedAt: file.updatedAt,
+  uploadedBy: file.user,
+  shareableLink: `${req.protocol}://${req.get("host")}/api/files/${file._id}`
+});
+
+const getUserFiles = asyncHandler(async (req, res) => {
+  console.log("[file.controller.js/getUserFiles] Route hit: get all files for logged-in user.");
+
+  const files = await File.find({ user: req.user._id }).sort({ createdAt: -1 });
+  const formattedFiles = files.map((file) => buildFileResponse(req, file));
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Files fetched successfully", formattedFiles));
+});
+
 const getFileById = asyncHandler(async (req, res) => {
   console.log("[file.controller.js/getFileById] Route hit: getFileById controller entered.");
   console.log("[file.controller.js/getFileById] req.params received from URL:", req.params);
@@ -88,4 +113,4 @@ const getFileById = asyncHandler(async (req, res) => {
   return res.redirect(file.url);
 });
 
-export { uploadFile, getFileById };
+export { uploadFile, getUserFiles, getFileById };
