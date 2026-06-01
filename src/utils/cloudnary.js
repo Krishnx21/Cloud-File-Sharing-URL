@@ -19,10 +19,19 @@ cloudinary.config({
 console.log("[cloudnary.js] Cloudinary config completed. Incoming cloud_name exists:", Boolean(process.env.CLOUDINARY_CLOUD_NAME));
 console.log("[cloudnary.js] Data going out: uploadOnCloudinary() can now call cloudinary.uploader.upload().");
 
+const getCloudinaryResourceType = (mimetype = "") => {
+  if (mimetype.startsWith("image/") || mimetype.startsWith("video/")) {
+    return "auto";
+  }
+
+  return "raw";
+};
+
 // Upload one local file path to Cloudinary.
-const uploadOnCloudinary = async (localFilePath) => {
+const uploadOnCloudinary = async (localFilePath, mimetype) => {
   console.log("[cloudnary.js/uploadOnCloudinary] Upload helper entered from a controller.");
   console.log("[cloudnary.js/uploadOnCloudinary] Incoming local file path:", localFilePath);
+  console.log("[cloudnary.js/uploadOnCloudinary] Incoming mimetype:", mimetype);
   console.log("[cloudnary.js/uploadOnCloudinary] Next step: validate file path before upload.");
   try {
     // If no file path is provided, return null.
@@ -31,12 +40,14 @@ const uploadOnCloudinary = async (localFilePath) => {
       return null;
     }
 
-    // Upload file. resource_type auto means image/video/pdf/etc can be detected.
-    console.log("[cloudnary.js/uploadOnCloudinary] Cloudinary upload starting. Data going in:", { localFilePath, resource_type: "auto" });
+    const resourceType = getCloudinaryResourceType(mimetype);
+
+    // Upload file. Non-image documents should be raw assets so browsers receive the original file.
+    console.log("[cloudnary.js/uploadOnCloudinary] Cloudinary upload starting. Data going in:", { localFilePath, resource_type: resourceType });
     const response = await cloudinary.uploader.upload(
       localFilePath,
       {
-        resource_type: "auto"
+        resource_type: resourceType
       }
     );
 

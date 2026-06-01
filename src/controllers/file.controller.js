@@ -29,7 +29,7 @@ const uploadFile = asyncHandler(async (req, res) => {
     throw new ApiError(400, "File is required");
   }
 
-  const uploadedFile = await uploadOnCloudinary(req.file.path);
+  const uploadedFile = await uploadOnCloudinary(req.file.path, req.file.mimetype);
 
   if (!uploadedFile?.url || !uploadedFile?.public_id) {
     throw new ApiError(500, "File upload failed");
@@ -51,6 +51,8 @@ const uploadFile = asyncHandler(async (req, res) => {
     expiresAt
   });
 
+  const shareableLink = `${req.protocol}://${req.get("host")}/api/files/${file._id}`;
+
   console.log("[file.controller.js/uploadFile] File saved in MongoDB:", file);
 
   return res.status(201).json(
@@ -62,7 +64,8 @@ const uploadFile = asyncHandler(async (req, res) => {
       size: file.size,
       mimetype: file.mimetype,
       expiresAt: file.expiresAt,
-      uploadedBy: file.user
+      uploadedBy: file.user,
+      shareableLink
     })
   );
 });
@@ -77,9 +80,11 @@ const getFileById = asyncHandler(async (req, res) => {
     throw new ApiError(404, "File not found");
   }
 
-  return res
-    .status(200)
-    .json(new ApiResponse(200, "File fetched successfully", file));
+  if (file.expiresAt && file.expiresAt < new Date()) {
+    throw new ApiError(410, "File link has expired");
+  }
+
+  return res.redirect(file.url);
 });
 
 export { uploadFile, getFileById };

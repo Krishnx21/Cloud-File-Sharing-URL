@@ -442,25 +442,7 @@ IN THIS PROJECT THE THINGS I HAVE TO IMPLEMENTED
 
 
 
-Step 7: Cloudinary Upload
 
-Flow:
-
-req.file
--> req.file.path
--> uploadOnCloudinary(req.file.path)
--> Cloudinary returns url and public_id
-Step 8: Save File Record
-
-Save in MongoDB:
-
-filename
-url
-publicId
-uploadedBy
-size
-mimetype
-expiresAt
 Step 9: Generate Shareable Link
 
 After saving file, return:
