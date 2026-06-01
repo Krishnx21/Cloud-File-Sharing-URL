@@ -65,6 +65,7 @@ const uploadFile = asyncHandler(async (req, res) => {
       mimetype: file.mimetype,
       expiresAt: file.expiresAt,
       uploadedBy: file.user,
+      deleted: file.deleted,
       shareableLink
     })
   );
