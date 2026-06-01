@@ -15,7 +15,7 @@ export function Sidebar({ open, onClose }) {
       <div className={cn("fixed inset-0 z-40 bg-black/60 lg:hidden", open ? "block" : "hidden")} onClick={onClose} />
       <aside
         className={cn(
-          "fixed left-0 top-0 z-50 h-screen w-72 border-r border-white/10 bg-[#080a0f]/95 p-4 backdrop-blur-xl transition-transform lg:sticky lg:top-16 lg:z-20 lg:h-[calc(100vh-4rem)] lg:translate-x-0",
+          "fixed left-0 top-0 z-50 h-screen w-72 border-r border-white/10 bg-[#0d1014] p-4 transition-transform lg:sticky lg:top-16 lg:z-20 lg:h-[calc(100vh-4rem)] lg:translate-x-0",
           open ? "translate-x-0" : "-translate-x-full"
         )}
       >
@@ -34,8 +34,8 @@ export function Sidebar({ open, onClose }) {
               onClick={onClose}
               className={({ isActive }) =>
                 cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-400 transition hover:bg-white/10 hover:text-white",
-                  isActive && "bg-white/10 text-white subtle-ring"
+                  "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-slate-400 transition hover:bg-white/[0.06] hover:text-white",
+                  isActive && "border border-white/10 bg-[#171c22] text-[#f4f1ea]"
                 )
               }
             >
