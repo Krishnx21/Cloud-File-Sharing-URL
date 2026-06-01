@@ -4,38 +4,44 @@
 // 3. Upload file to Cloudinary
 // 4. Save Cloudinary details in MongoDB
 // 5. Send response to frontend/Postman
-import fs from "fs";
 import { File } from "../modules/file.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { uploadOnCloudinary } from "../utils/cloudnary.js";
+import { uploadBufferOnCloudinary } from "../utils/cloudnary.js";
 
 console.log("[file.controller.js] File controller loaded because file.routes.js imported uploadFile/getFileById.");
 
-const removeLocalFile = (localPath) => {
-  if (localPath && fs.existsSync(localPath)) {
-    fs.unlinkSync(localPath);
-  }
-};
+const getUploadMode = asyncHandler(async (req, res) => {
+  return res.status(200).json(
+    new ApiResponse(200, "Upload mode fetched", {
+      uploadMode: "memoryStorage",
+      usesPublicTemp: false,
+      usesUnlink: false
+    })
+  );
+});
 
 const uploadFile = asyncHandler(async (req, res) => {
+  console.log("[file.controller.js/uploadFile] ACTIVE_UPLOAD_MODE=memoryStorage/no-unlink.");
   console.log("[file.controller.js/uploadFile] Route hit: uploadFile controller entered.");
   console.log("[file.controller.js/uploadFile] req.user received from auth middleware:", req.user);
   console.log("[file.controller.js/uploadFile] req.file received from multer middleware:", req.file);
   console.log("[file.controller.js/uploadFile] req.body received with any extra form fields:", req.body);
 
-  if (!req.file?.path) {
+  if (!req.file?.buffer) {
     throw new ApiError(400, "File is required");
   }
 
-  const uploadedFile = await uploadOnCloudinary(req.file.path, req.file.mimetype);
+  const uploadedFile = await uploadBufferOnCloudinary(
+    req.file.buffer,
+    req.file.mimetype,
+    req.file.originalname
+  );
 
   if (!uploadedFile?.url || !uploadedFile?.public_id) {
     throw new ApiError(500, "File upload failed");
   }
-
-  removeLocalFile(req.file.path);
 
   const expiresInDays = Number(req.body?.expiresInDays || 7);
   const expiresAt = new Date();
@@ -113,4 +119,4 @@ const getFileById = asyncHandler(async (req, res) => {
   return res.redirect(file.url);
 });
 
-export { uploadFile, getUserFiles, getFileById };
+export { getUploadMode, uploadFile, getUserFiles, getFileById };
