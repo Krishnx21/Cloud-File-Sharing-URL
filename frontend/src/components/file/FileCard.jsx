@@ -1,10 +1,11 @@
-import { Calendar, FileText } from "lucide-react";
+import { Calendar, Download, FileText, Trash2 } from "lucide-react";
 import { CopyButton } from "../common/CopyButton.jsx";
 import { Badge } from "../ui/badge.jsx";
+import { Button } from "../ui/button.jsx";
 import { Card } from "../ui/card.jsx";
 import { formatBytes, formatDate } from "../../lib/utils.js";
 
-export function FileCard({ file }) {
+export function FileCard({ file, onDelete }) {
   const expired = file.expiresAt && new Date(file.expiresAt) < new Date();
 
   return (
@@ -21,11 +22,19 @@ export function FileCard({ file }) {
             <span className="flex items-center gap-1 text-xs text-slate-500">
               <Calendar size={13} /> Expires {formatDate(file.expiresAt)}
             </span>
+            <span className="flex items-center gap-1 text-xs text-slate-500">
+              <Download size={13} /> {file.downloadCount || 0}
+            </span>
           </div>
         </div>
       </div>
-      <div className="mt-4">
+      <div className="mt-4 flex gap-2">
         <CopyButton value={file.shareableLink} label="Copy link" />
+        {onDelete ? (
+          <Button variant="danger" size="sm" onClick={() => onDelete(file.id || file._id)}>
+            <Trash2 size={15} /> Delete
+          </Button>
+        ) : null}
       </div>
     </Card>
   );

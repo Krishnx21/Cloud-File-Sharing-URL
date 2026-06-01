@@ -9,7 +9,7 @@ import { useFiles } from "../hooks/useFiles.js";
 
 export function FileHistory() {
   const [query, setQuery] = useState("");
-  const { files, loading, error } = useFiles();
+  const { files, loading, error, removeFile } = useFiles();
   const filtered = useMemo(
     () => files.filter((file) => file.filename?.toLowerCase().includes(query.toLowerCase())),
     [files, query]
@@ -35,9 +35,9 @@ export function FileHistory() {
         <p className="rounded-lg border border-rose-300/20 bg-rose-400/10 p-4 text-sm text-rose-200">{error}</p>
       ) : filtered.length ? (
         <>
-          <FileTable files={filtered} />
+          <FileTable files={filtered} onDelete={removeFile} />
           <div className="grid gap-3 md:hidden">
-            {filtered.map((file) => <FileCard key={file.id || file._id} file={file} />)}
+            {filtered.map((file) => <FileCard key={file.id || file._id} file={file} onDelete={removeFile} />)}
           </div>
         </>
       ) : (

@@ -5,37 +5,30 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "#050608",
-        foreground: "#f8fafc",
-        muted: "#8b96a7",
-        card: "rgba(255,255,255,0.06)",
-        border: "rgba(255,255,255,0.12)",
+        background: "#0b0d10",
+        foreground: "#f4f1ea",
+        muted: "#8f9aa7",
+        card: "#12161b",
+        border: "rgba(244, 241, 234, 0.1)",
         primary: {
-          DEFAULT: "#34d399",
-          foreground: "#02120d"
+          DEFAULT: "#d6b26e",
+          foreground: "#17130b"
         },
         accent: {
-          cyan: "#22d3ee",
-          violet: "#a78bfa",
-          rose: "#fb7185"
+          cyan: "#8fb8c8",
+          violet: "#9b8fb8",
+          rose: "#d08b85"
         }
       },
       boxShadow: {
-        glow: "0 0 48px rgba(52, 211, 153, 0.18)",
-        glass: "0 24px 80px rgba(0, 0, 0, 0.38)"
+        glow: "0 10px 30px rgba(214, 178, 110, 0.12)",
+        glass: "0 18px 48px rgba(0, 0, 0, 0.28)"
       },
       fontFamily: {
         sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"]
       },
-      keyframes: {
-        float: {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-8px)" }
-        }
-      },
-      animation: {
-        float: "float 6s ease-in-out infinite"
-      }
+      keyframes: {},
+      animation: {}
     }
   },
   plugins: []

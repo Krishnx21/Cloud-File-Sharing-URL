@@ -1,10 +1,10 @@
-import { ExternalLink, FileText } from "lucide-react";
+import { Download, ExternalLink, FileText, Trash2 } from "lucide-react";
 import { CopyButton } from "../common/CopyButton.jsx";
 import { Badge } from "../ui/badge.jsx";
 import { Button } from "../ui/button.jsx";
 import { formatBytes, formatDate } from "../../lib/utils.js";
 
-export function FileTable({ files }) {
+export function FileTable({ files, onDelete }) {
   return (
     <div className="hidden overflow-hidden rounded-xl border border-white/10 bg-white/[0.04] md:block">
       <table className="w-full text-left text-sm">
@@ -13,6 +13,7 @@ export function FileTable({ files }) {
             <th className="px-4 py-3 font-medium">File</th>
             <th className="px-4 py-3 font-medium">Size</th>
             <th className="px-4 py-3 font-medium">Expires</th>
+            <th className="px-4 py-3 font-medium">Downloads</th>
             <th className="px-4 py-3 font-medium">Status</th>
             <th className="px-4 py-3 text-right font-medium">Actions</th>
           </tr>
@@ -35,6 +36,11 @@ export function FileTable({ files }) {
                 </td>
                 <td className="px-4 py-4 text-slate-300">{formatBytes(file.size)}</td>
                 <td className="px-4 py-4 text-slate-300">{formatDate(file.expiresAt)}</td>
+                <td className="px-4 py-4 text-slate-300">
+                  <span className="inline-flex items-center gap-1">
+                    <Download size={14} /> {file.downloadCount || 0}
+                  </span>
+                </td>
                 <td className="px-4 py-4">
                   <Badge variant={expired ? "warn" : "default"}>{expired ? "Expired" : "Active"}</Badge>
                 </td>
@@ -46,6 +52,11 @@ export function FileTable({ files }) {
                         <ExternalLink size={15} />
                       </Button>
                     </a>
+                    {onDelete ? (
+                      <Button size="sm" variant="danger" onClick={() => onDelete(file.id || file._id)}>
+                        <Trash2 size={15} />
+                      </Button>
+                    ) : null}
                   </div>
                 </td>
               </tr>

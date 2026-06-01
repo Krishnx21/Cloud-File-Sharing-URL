@@ -1,7 +1,7 @@
 import { cn } from "../../lib/utils.js";
 
 export function Card({ className, ...props }) {
-  return <div className={cn("glass-card rounded-xl", className)} {...props} />;
+  return <div className={cn("glass-card rounded-lg", className)} {...props} />;
 }
 
 export function CardHeader({ className, ...props }) {

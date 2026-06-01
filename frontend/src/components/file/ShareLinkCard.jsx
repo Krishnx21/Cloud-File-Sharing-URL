@@ -1,4 +1,5 @@
 import { ExternalLink, Link2 } from "lucide-react";
+import { QRCodeCanvas } from "qrcode.react";
 import { CopyButton } from "../common/CopyButton.jsx";
 import { Card } from "../ui/card.jsx";
 import { Button } from "../ui/button.jsx";
@@ -14,6 +15,9 @@ export function ShareLinkCard({ file }) {
             <Link2 size={16} /> Shareable link ready
           </div>
           <p className="truncate rounded-lg border border-white/10 bg-black/20 px-3 py-2 text-sm text-slate-300">{file.shareableLink}</p>
+        </div>
+        <div className="rounded-lg bg-white p-2">
+          <QRCodeCanvas value={file.shareableLink} size={84} />
         </div>
         <div className="flex shrink-0 gap-2">
           <CopyButton value={file.shareableLink} />

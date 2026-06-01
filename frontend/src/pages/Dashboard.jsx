@@ -11,13 +11,15 @@ import { formatBytes } from "../lib/utils.js";
 export function Dashboard() {
   const { files, loading, error } = useFiles();
   const activeFiles = files.filter((file) => !file.expiresAt || new Date(file.expiresAt) > new Date());
+  const expiringSoon = activeFiles.filter((file) => file.expiresAt && new Date(file.expiresAt) - new Date() < 3 * 86400000);
   const totalSize = files.reduce((sum, file) => sum + (file.size || 0), 0);
+  const totalDownloads = files.reduce((sum, file) => sum + (file.downloadCount || 0), 0);
 
   const stats = [
     { label: "Total files", value: files.length, icon: Files },
     { label: "Active links", value: activeFiles.length, icon: Link2 },
-    { label: "Storage used", value: formatBytes(totalSize), icon: HardDrive },
-    { label: "Expiring soon", value: activeFiles.length ? "7d" : "0", icon: Clock3 }
+    { label: "Downloads", value: totalDownloads, icon: HardDrive },
+    { label: "Expiring soon", value: expiringSoon.length, icon: Clock3 }
   ];
 
   return (
@@ -26,7 +28,7 @@ export function Dashboard() {
         <div>
           <p className="text-sm text-primary">Dashboard</p>
           <h1 className="mt-1 text-3xl font-semibold text-white">Your secure sharing hub</h1>
-          <p className="mt-2 text-sm text-slate-400">Monitor uploads, copied links, and active file access in one workspace.</p>
+          <p className="mt-2 text-sm text-slate-400">Monitor uploads, expiry windows, and shared-file activity in one workspace.</p>
         </div>
         <Link to="/app/upload">
           <Button>
@@ -75,7 +77,12 @@ export function Dashboard() {
           <h2 className="font-semibold text-white">Upload health</h2>
           <p className="mt-2 text-sm leading-6 text-slate-400">Your share flow is configured for authenticated uploads, expiring links, and Cloudinary delivery.</p>
           <div className="mt-6 space-y-4">
-            {["JWT protected upload route", "Cloudinary raw file delivery", "Shareable link redirect", "Responsive dashboard"].map((item) => (
+            {[
+              `${formatBytes(totalSize)} stored`,
+              `${totalDownloads} total downloads`,
+              `${activeFiles.length} active links`,
+              `${expiringSoon.length} links expiring in 3 days`
+            ].map((item) => (
               <div key={item} className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.04] px-3 py-3">
                 <span className="text-sm text-slate-300">{item}</span>
                 <span className="h-2.5 w-2.5 rounded-full bg-primary shadow-glow" />

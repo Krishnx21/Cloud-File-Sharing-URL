@@ -71,6 +71,8 @@ const uploadFile = asyncHandler(async (req, res) => {
       size: file.size,
       mimetype: file.mimetype,
       expiresAt: file.expiresAt,
+      downloadCount: file.downloadCount || 0,
+      lastAccessedAt: file.lastAccessedAt,
       uploadedBy: file.user,
       deleted: file.deleted,
       shareableLink
