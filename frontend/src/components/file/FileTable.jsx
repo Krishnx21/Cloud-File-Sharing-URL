@@ -8,7 +8,15 @@ import { FileTypeIcon } from "./FileTypeIcon.jsx";
 export function FileTable({ files, onDelete }) {
   return (
     <div className="hidden overflow-hidden rounded-lg border border-white/10 bg-[#101318] md:block">
-      <table className="w-full text-left text-sm">
+      <table className="w-full table-fixed text-left text-sm">
+        <colgroup>
+          <col className="w-[38%]" />
+          <col className="w-[8%]" />
+          <col className="w-[10%]" />
+          <col className="w-[10%]" />
+          <col className="w-[10%]" />
+          <col className="w-[24%]" />
+        </colgroup>
         <thead className="border-b border-white/10 bg-[#0d1014] text-xs uppercase tracking-wide text-slate-500">
           <tr>
             <th className="px-4 py-3 font-medium">File</th>
@@ -33,7 +41,9 @@ export function FileTable({ files, onDelete }) {
                     </div>
                   </div>
                 </td>
-                <td className="px-4 py-4 text-slate-300">{formatBytes(file.size)}</td>
+                <td className="px-4 py-4 text-slate-300">
+                  <span className="block truncate">{formatBytes(file.size)}</span>
+                </td>
                 <td className="px-4 py-4 text-slate-300">{formatDate(file.expiresAt)}</td>
                 <td className="px-4 py-4 text-slate-300">
                   <span className="inline-flex items-center gap-1">
@@ -44,15 +54,15 @@ export function FileTable({ files, onDelete }) {
                   <Badge variant={expired ? "warn" : "default"}>{expired ? "Expired" : "Active"}</Badge>
                 </td>
                 <td className="px-4 py-4">
-                  <div className="flex justify-end gap-2">
-                    <CopyButton value={file.shareableLink} label="Copy" />
+                  <div className="flex items-center justify-end gap-2 whitespace-nowrap">
+                    <CopyButton className="shrink-0" value={file.shareableLink} label="Copy" />
                     <a href={file.shareableLink} target="_blank" rel="noreferrer">
-                      <Button size="sm" variant="outline">
+                      <Button className="shrink-0" size="sm" variant="outline" aria-label={`Open ${file.filename}`}>
                         <ExternalLink size={15} />
                       </Button>
                     </a>
                     {onDelete ? (
-                      <Button size="sm" variant="danger" onClick={() => onDelete(file.id || file._id)}>
+                      <Button className="shrink-0" size="sm" variant="danger" onClick={() => onDelete(file.id || file._id)} aria-label={`Delete ${file.filename}`}>
                         <Trash2 size={15} />
                       </Button>
                     ) : null}
