@@ -8,12 +8,90 @@
 ![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)
+![Render](https://img.shields.io/badge/Backend-Render-46E3B7?style=flat-square&logo=render&logoColor=white)
+![Vercel](https://img.shields.io/badge/Frontend-Vercel-000000?style=flat-square&logo=vercel&logoColor=white)
 
 > A beginner-friendly full-stack file sharing system with authentication, Cloudinary uploads, shareable links, QR codes, download tracking, and a React dashboard.
 
 This project includes a Node.js/Express backend and a React/Vite frontend for a smart file-sharing system. It supports user registration, login, JWT authentication, MongoDB storage, Cloudinary uploads, expiring share links, QR code sharing, file history, download counts, delete file, and a local forgot-password reset flow.
 
 The codebase also includes easy comments in almost every backend file so the full request flow is easier to understand while learning.
+
+## Deployment
+
+This project is deployed as two separate services:
+
+| Part | Platform | URL |
+|---|---|---|
+| Frontend | Vercel | `https://your-vercel-app-url.vercel.app` |
+| Backend API | Render | `https://cloud-file-sharing-url.onrender.com` |
+
+The frontend calls the backend through:
+
+```env
+VITE_API_BASE_URL=https://cloud-file-sharing-url.onrender.com/api
+```
+
+The backend must allow the deployed Vercel frontend origin through CORS:
+
+```env
+CORS_ORIGIN=https://your-vercel-app-url.vercel.app
+PUBLIC_BASE_URL=https://cloud-file-sharing-url.onrender.com
+```
+
+Replace `https://your-vercel-app-url.vercel.app` with the actual Vercel deployment URL.
+
+### Backend Deployment on Render
+
+Create a new Render Web Service from this repository.
+
+Use these settings:
+
+```txt
+Root directory: .
+Build command: npm install
+Start command: npm start
+```
+
+Add these Render environment variables:
+
+```env
+PORT=8000
+MONGO_URI=your_mongodb_atlas_connection_string
+USE_LOCAL_DB=false
+CORS_ORIGIN=https://your-vercel-app-url.vercel.app
+JWT_SECRET=your_jwt_secret
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+PUBLIC_BASE_URL=https://cloud-file-sharing-url.onrender.com
+```
+
+After deployment, the API base URL is:
+
+```txt
+https://cloud-file-sharing-url.onrender.com/api
+```
+
+### Frontend Deployment on Vercel
+
+Create a new Vercel project from the same repository.
+
+Use these settings:
+
+```txt
+Root directory: frontend
+Build command: npm run build
+Output directory: dist
+```
+
+Add this Vercel environment variable:
+
+```env
+VITE_API_BASE_URL=https://cloud-file-sharing-url.onrender.com/api
+```
+
+After changing Vercel or Render environment variables, redeploy the affected service.
 
 ## What This Backend Does
 
